@@ -34,7 +34,8 @@
 	@isset($hosted_by)
 	<p class="hosted_by w-full uppercase text-text-main-400 leading-6 font-normal">
 		<a rel="noopener noreferrer" target="_blank" href="https://LycheeOrg.github.io" tabindex="-1"
-		class="underline">{{ $hosted_by }}</a>
+		class="underline">{{ $hosted_by }}</a><br />
+		<a href="https://milk.choco.ink/@tachibana" rel="me">@tachibana@milk.choco.ink</a>
 	</p>
 	@endisset
 </div>
