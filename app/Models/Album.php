@@ -123,9 +123,12 @@ use Kalnoy\Nestedset\NodeTrait;
  * @method static AlbumBuilder|Album         withoutRoot()
  *
  * // * @mixin \Eloquent
+ *
+ * @implements Node<string,Album>
  */
 class Album extends BaseAlbum implements Node
 {
+	/** @phpstan-use NodeTrait<string,Album> */
 	use NodeTrait;
 	use ToArrayThrowsNotImplemented;
 	use HasFactory;
@@ -172,6 +175,9 @@ class Album extends BaseAlbum implements Node
 	 */
 	protected $with = ['cover', 'cover.size_variants', 'thumb'];
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	protected function _toArray(): array
 	{
 		return parent::toArray();
@@ -217,13 +223,14 @@ class Album extends BaseAlbum implements Node
 	/**
 	 * Get query for descendants of the node.
 	 *
-	 * @return DescendantsRelation
+	 * @return DescendantsRelation<string,Album>
 	 *
 	 * @throws QueryBuilderException
 	 */
 	public function descendants(): DescendantsRelation
 	{
 		try {
+			/** @var DescendantsRelation<string,Album> */
 			return new DescendantsRelation($this->newQuery(), $this);
 		} catch (\Throwable $e) {
 			throw new QueryBuilderException($e);
@@ -233,7 +240,7 @@ class Album extends BaseAlbum implements Node
 	/**
 	 * Return the relationship between an album and its cover.
 	 *
-	 * @return HasOne
+	 * @return HasOne<Photo>
 	 */
 	public function cover(): HasOne
 	{
@@ -243,7 +250,7 @@ class Album extends BaseAlbum implements Node
 	/**
 	 * Return the relationship between an album and its header.
 	 *
-	 * @return HasOne
+	 * @return HasOne<Photo>
 	 */
 	public function header(): HasOne
 	{

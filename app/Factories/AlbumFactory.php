@@ -78,8 +78,6 @@ class AlbumFactory
 		}
 
 		try {
-			// PHPStan does not understand that `findOrFail` returns `BaseAlbum`, but assumes that it returns `Model`
-			// @phpstan-ignore-next-line
 			return $albumQuery->findOrFail($albumID);
 		} catch (ModelNotFoundException) {
 			try {
@@ -99,8 +97,8 @@ class AlbumFactory
 	 *                                album (i.e. photos and sub-albums,
 	 *                                if applicable) shall be loaded, too.
 	 *
-	 * @return Collection<AbstractAlbum> a possibly empty list of
-	 *                                   {@link AbstractAlbum}
+	 * @return Collection<int,AbstractAlbum> a possibly empty list of
+	 *                                       {@link AbstractAlbum}
 	 *
 	 * @throws ModelNotFoundException
 	 */
@@ -122,6 +120,7 @@ class AlbumFactory
 			}
 		}
 
+		/** @phpstan-ignore-next-line phpstan stan complain of incompatibility of types while both are subtypes... */
 		return new Collection(array_merge(
 			$smartAlbums,
 			$this->findBaseAlbumsOrFail($modelAlbumIDs, $withRelations)->all()
@@ -137,7 +136,7 @@ class AlbumFactory
 	 *                                album (i.e. photos and sub-albums,
 	 *                                if applicable) shall be loaded, too.
 	 *
-	 * @return Collection<BaseAlbum> a possibly empty list of {@link BaseAlbum}
+	 * @return Collection<int,Album|TagAlbum> a possibly empty list of {@link BaseAlbum}
 	 *
 	 * @throws ModelNotFoundException
 	 */
@@ -156,7 +155,7 @@ class AlbumFactory
 			$albumQuery->with(['photos', 'children', 'photos.size_variants']);
 		}
 
-		/** @var Collection<int,BaseAlbum> $result */
+		/** @var Collection<int,Album|TagAlbum> $result */
 		$result = new Collection(array_merge(
 			$tagAlbumQuery->findMany($albumIDs)->all(),
 			$albumQuery->findMany($albumIDs)->all(),
@@ -177,7 +176,7 @@ class AlbumFactory
 	 *                            {@link BaseSmartAlbum::photos()}
 	 *                            for each smart album
 	 *
-	 * @return Collection
+	 * @return Collection<int,BaseSmartAlbum>
 	 *
 	 * @throws InvalidSmartIdException
 	 */
